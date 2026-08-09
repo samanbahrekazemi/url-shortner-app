@@ -2,12 +2,12 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 COPY Directory.Packages.props ./
-COPY src/UrlShortener.Domain/ src/UrlShortener.Domain/
-COPY src/UrlShortener.Application/ src/UrlShortener.Application/
-COPY src/UrlShortener.Infrastructure/ src/UrlShortener.Infrastructure/
-COPY src/UrlShortener.WebApi/ src/UrlShortener.WebApi/
+COPY backend/src/UrlShortener.Domain/ backend/src/UrlShortener.Domain/
+COPY backend/src/UrlShortener.Application/ backend/src/UrlShortener.Application/
+COPY backend/src/UrlShortener.Infrastructure/ backend/src/UrlShortener.Infrastructure/
+COPY backend/src/UrlShortener.WebApi/ backend/src/UrlShortener.WebApi/
 
-RUN dotnet publish src/UrlShortener.WebApi/UrlShortener.WebApi.csproj \
+RUN dotnet publish backend/src/UrlShortener.WebApi/UrlShortener.WebApi.csproj \
     -c Release \
     -o /app/publish
 
