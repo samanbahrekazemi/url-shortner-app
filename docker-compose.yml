@@ -1,0 +1,98 @@
+name: url-shortner
+
+services:
+  postgres:
+    container_name: url-shortner-db
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: ${DB_NAME:-urlshortener}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      # Bind mount to local ./data/postgres directory
+      - ./data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-urlshortener}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - url-shortner-network
+    restart: unless-stopped
+
+  pgadmin:
+    container_name: url-shortner-pgadmin
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@admin.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    volumes:
+      # Bind mount to local ./data/pgadmin directory
+      - ./data/pgadmin:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - url-shortner-network
+    restart: unless-stopped
+
+  api:
+    container_name: url-shortner-api
+    image: url-shortner-api:${VERSION:-v1}
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      CorsOrigins: ${CORS_ORIGINS}
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
+      ASPNETCORE_URLS: "http://+:80"
+      # Database connection using the postgres service name
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=${DB_NAME:-urlshortener};Username=${DB_USER:-postgres};Password=${DB_PASSWORD:-postgres}"
+      # Alternative if using environment variables in app
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-urlshortener}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+    ports:
+      - "${API_PORT:-5030}:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:80/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - url-shortner-network
+    restart: unless-stopped
+
+  ui:
+    container_name: url-shortner-ui
+    image: url-shortner-ui:${VERSION:-v1}
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: ${BACKEND_URL}
+    ports:
+      - "${UI_PORT:-3030}:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - url-shortner-network
+    restart: unless-stopped
+
+networks:
+  url-shortner-network:
+    driver: bridge

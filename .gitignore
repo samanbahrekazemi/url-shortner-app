@@ -1,0 +1,28 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.csproj.user
+
+# Build output
+**/bin/
+**/obj/
+**/publish/
+
+# NuGet
+**/*.nupkg
+**/packages/
+
+# Rider / JetBrains
+.idea/
+
+# Docker data
+/data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local

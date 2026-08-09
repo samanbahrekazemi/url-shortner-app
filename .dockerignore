@@ -1,0 +1,10 @@
+**/.vs
+**/bin
+**/obj
+**/node_modules
+**/.git
+**/Dockerfile
+**/docker-compose*.yaml
+**/.dockerignore
+**/init-scripts
+**/pgadmin-servers
