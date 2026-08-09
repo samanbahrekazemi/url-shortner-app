@@ -76,11 +76,20 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        var origins = builder.Configuration["CorsOrigins"] ?? "http://localhost:3030,http://localhost:3031";
-        policy.WithOrigins(origins.Split(','))
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
+        var origins = builder.Configuration["CorsOrigins"];
+        if (!string.IsNullOrWhiteSpace(origins) && origins != "*")
+        {
+            policy.WithOrigins(origins.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        }
+        else
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        }
     });
 });
 
