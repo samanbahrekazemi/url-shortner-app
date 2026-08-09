@@ -54,14 +54,7 @@ services:
       CorsOrigins: ${CORS_ORIGINS}
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
       ASPNETCORE_URLS: "http://+:80"
-      # Database connection using the postgres service name
-      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=${DB_NAME:-urlshortener};Username=${DB_USER:-postgres};Password=${DB_PASSWORD:-postgres}"
-      # Alternative if using environment variables in app
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_NAME: ${DB_NAME:-urlshortener}
-      DB_USER: ${DB_USER:-postgres}
-      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DATABASE_URL: "Host=postgres;Port=5432;Database=${DB_NAME:-urlshortener};Username=${DB_USER:-postgres};Password=${DB_PASSWORD:-postgres}"
     ports:
       - "${API_PORT:-5030}:80"
     depends_on:

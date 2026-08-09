@@ -13,7 +13,8 @@ public static class DatabaseInitializer
         using var scope = app.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+        var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
+                               ?? Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
         if (!string.IsNullOrEmpty(connectionString))
         {

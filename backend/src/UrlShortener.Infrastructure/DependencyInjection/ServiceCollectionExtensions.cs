@@ -32,11 +32,12 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static string ResolveConnectionString(IConfiguration configuration)
+    private static string? ResolveConnectionString(IConfiguration configuration)
     {
-        return configuration["CONNECTION_STRING"]
-               ?? Environment.GetEnvironmentVariable("CONNECTION_STRING")
-               ?? configuration.GetConnectionString("DefaultConnection");
+        return configuration["DATABASE_URL"]
+               ?? Environment.GetEnvironmentVariable("DATABASE_URL")
+               ?? configuration["CONNECTION_STRING"]
+               ?? Environment.GetEnvironmentVariable("CONNECTION_STRING");
     }
 }
 

@@ -18,9 +18,10 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
         return new AppDbContext(optionsBuilder.Options);
     }
 
-    private static string ResolveConnectionString()
+    private static string? ResolveConnectionString()
     {
-        var env = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+        var env = Environment.GetEnvironmentVariable("DATABASE_URL")
+                  ?? Environment.GetEnvironmentVariable("CONNECTION_STRING");
         if (!string.IsNullOrEmpty(env))
             return env;
 
@@ -31,9 +32,13 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
             if (File.Exists(envPath))
             {
                 var line = File.ReadLines(envPath)
-                    .FirstOrDefault(l => l.StartsWith("CONNECTION_STRING=", StringComparison.OrdinalIgnoreCase));
+                    .FirstOrDefault(l => l.StartsWith("DATABASE_URL=", StringComparison.OrdinalIgnoreCase)
+                                     || l.StartsWith("CONNECTION_STRING=", StringComparison.OrdinalIgnoreCase));
                 if (line != null)
-                    return line["CONNECTION_STRING=".Length..].Trim('"', '\'', ' ');
+                {
+                    var separatorIndex = line.IndexOf('=');
+                    return line[(separatorIndex + 1)..].Trim('"', '\'', ' ');
+                }
             }
             dir = Path.GetDirectoryName(dir);
         }
