@@ -20,6 +20,25 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
 
     private static string? ResolveConnectionString()
     {
+        var value = ResolveRawConnectionString();
+        if (string.IsNullOrEmpty(value))
+            return null;
+
+        if (value.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase)
+            || value.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase))
+        {
+            var uri = new Uri(value);
+            var userInfo = uri.UserInfo.Split(':', 2);
+            var user = Uri.UnescapeDataString(userInfo[0]);
+            var password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : "";
+            return $"Host={uri.Host};Port={uri.Port > 0 ? uri.Port : 5432};Database={uri.AbsolutePath.TrimStart('/')};Username={user};Password={password}";
+        }
+
+        return value;
+    }
+
+    private static string? ResolveRawConnectionString()
+    {
         var env = Environment.GetEnvironmentVariable("DATABASE_URL")
                   ?? Environment.GetEnvironmentVariable("CONNECTION_STRING");
         if (!string.IsNullOrEmpty(env))
