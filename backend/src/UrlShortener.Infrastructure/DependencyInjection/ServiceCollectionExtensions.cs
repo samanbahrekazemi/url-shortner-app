@@ -49,7 +49,7 @@ public static class ServiceCollectionExtensions
             var userInfo = uri.UserInfo.Split(':', 2);
             var user = Uri.UnescapeDataString(userInfo[0]);
             var password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : "";
-            return $"Host={uri.Host};Port={uri.Port > 0 ? uri.Port : 5432};Database={uri.AbsolutePath.TrimStart('/')};Username={user};Password={password}";
+            return $"Host={uri.Host};Port={(uri.Port > 0 ? uri.Port : 5432)};Database={uri.AbsolutePath.TrimStart('/')};Username={user};Password={password}";
         }
 
         return value;
