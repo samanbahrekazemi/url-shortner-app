@@ -97,6 +97,8 @@ var app = builder.Build();
 
 await DatabaseInitializer.ApplyMigrationsAsync(app);
 
+app.UseCors();
+
 const string docUrl = "/doc";
 app.MapGet("/", () => Results.Redirect(docUrl)).ExcludeFromDescription();
 
@@ -115,7 +117,6 @@ app.MapScalarApiReference(docUrl, options =>
     }
 });
 
-app.UseCors();
 app.MapHealthChecks("/health");
 app.MapUrlEndpoints();
 

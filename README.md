@@ -65,6 +65,16 @@ A production-ready URL shortener with a **.NET 10** backend API and a **Next.js 
 
 ---
 
+## 🔴 Live Demo
+
+| Service | URL |
+|---------|-----|
+| Frontend (Vercel) | [url-shortner-app-sooty.vercel.app](https://url-shortner-app-sooty.vercel.app/) |
+| Backend API (Railway) | [url-shortner-app-production-aec9.up.railway.app](https://url-shortner-app-production-aec9.up.railway.app/) |
+| API Docs (Scalar) | [url-shortner-app-production-aec9.up.railway.app/doc](https://url-shortner-app-production-aec9.up.railway.app/doc) |
+
+---
+
 ## 🚀 Quick Start
 
 ### Docker (recommended)
