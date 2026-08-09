@@ -16,7 +16,6 @@ import {
   ChevronUp,
   BookOpen,
   PanelLeft,
-  Github,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { siteConfig } from "@/config/site.config";
@@ -29,7 +28,7 @@ const navItems = [
 
 const externalLinks = [
   { href: `${siteConfig.apiUrl}/doc`, key: "nav.documentation" as const, icon: BookOpen },
-  { href: "https://github.com/samanbahrekazemi/url-shortner-app", key: "nav.github" as const, icon: Github },
+  { href: "https://github.com/samanbahrekazemi/url-shortner-app", key: "nav.github" as const, icon: ExternalLink },
 ];
 
 export function Sidebar() {
