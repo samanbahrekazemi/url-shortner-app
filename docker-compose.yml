@@ -49,7 +49,7 @@ services:
     image: url-shortner-api:${VERSION:-v1}
     build:
       context: .
-      dockerfile: backend/Dockerfile
+      dockerfile: Dockerfile
     environment:
       CorsOrigins: ${CORS_ORIGINS}
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
